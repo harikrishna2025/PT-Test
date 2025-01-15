@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager">
+        <collectionProp name="CookieManager.cookies"/>
+        <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+        <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+      </CookieManager>
+      <hashTree/>
+      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager">
+        <boolProp name="clearEachIteration">false</boolProp>
+        <boolProp name="useExpires">true</boolProp>
+        <boolProp name="CacheManager.controlledByThread">false</boolProp>
+      </CacheManager>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Low Fare Search">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/graphql-1">
+            <stringProp name="HTTPSampler.domain">ak-lfs-appsync-api-ecom-bat.digital.aircanada.com</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">/graphql</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;query&quot;:&quot;{\r\n  getFlightRecommendations(searchParameters: {\r\n    source: Home,\r\n    channel: ARW,\r\n    country: \&quot;CA\&quot;,\r\n    language: \&quot;EN\&quot;,\r\n    countryOfResidence: \&quot;CA\&quot;,\r\n    isLfcTriggered:false,\r\n    bookingSessionId: \&quot;\&quot;,\r\n    #  selectedOffer:{\r\n    # offerId: \&quot;b92f4713-0537-432c-a535-70c71e4a5b0d\&quot;,\r\n    #  recommendationId: \&quot;3689a3f6-63c5-4678-89ce-32e74ef1ce1e\&quot;,\r\n    # cabinCode: Y,\r\n    #  ranking: 1,\r\n    #  boundId: \&quot;DEL-YUL-2023-10-01-\&quot;,\r\n    # }\r\n    tripType: OneWay,\r\n    # eUpgrade: { cabin: J, tierCode: A },\r\n    itineraries: [\r\n      {\r\n        originLocationCode: \&quot;YYZ\&quot;,\r\n        originQualifier: Airport,\r\n        destinationLocationCode: \&quot;YHZ\&quot;,\r\n        destinationQualifier: Airport,\r\n        departureDate: \&quot;2025-02-23\&quot;,\r\n        isRequestedBound: true\r\n      }\r\n    #   ,\r\n    #   {\r\n    #     originLocationCode: \&quot;YUL\&quot;,\r\n    #     originQualifier: Airport,\r\n    #     destinationLocationCode: \&quot;DEL\&quot;,\r\n    #     destinationQualifier: Airport,\r\n    #     departureDate: \&quot;2023-10-05\&quot;,\r\n    #     isRequestedBound: true\r\n    #   }\r\n    ],\r\n    passengers: {\r\n      adult: 1,\r\n      child: 0,\r\n      youth: 0,\r\n      infantOnLap: 0,\r\n      infantOnSeat: 0\r\n    },\r\n    promoCode: \&quot;\&quot;,\r\n  }) {\r\n    responseData {\r\n      searchParams {\r\n        bookingMarket {\r\n          country\r\n          language\r\n          countryOfResidence\r\n          currency {\r\n            code\r\n            country\r\n            symbol\r\n          }\r\n        }\r\n        fareMarket\r\n        tripType\r\n        isOpenJaw\r\n        channel\r\n      }\r\n      basicFareUpsell {\r\n        selectedOfferId\r\n        selectedFareFamilyCode\r\n        upsellOfferId\r\n        upsellFareFamilyCode\r\n        priceDifference\r\n      }\r\n      boundSummary {\r\n        boundId\r\n        fareMarket\r\n        origin {\r\n          locationCode\r\n          type\r\n          cityCode\r\n          stateCode\r\n          countryCode\r\n        }\r\n        destination {\r\n          locationCode\r\n          type\r\n          cityCode\r\n          stateCode\r\n          countryCode\r\n        }\r\n        departureDate\r\n        pureLcc\r\n        trainCodes\r\n        busCodes\r\n        isCPApplied\r\n        recommendationsSummary {\r\n          minimumTravelTime\r\n          uniqueRecommendations\r\n          cabinSummary {\r\n            cabinCode\r\n            cheapestFarePerCabin\r\n          }\r\n        }\r\n        redirectedLocations {\r\n          destination {\r\n            newLocation{\r\n            locationCode\r\n            type\r\n            cityCode\r\n            stateCode\r\n             countryCode\r\n            }\r\n            originalLocation{\r\n                locationCode\r\n                type\r\n                 cityCode\r\n                 stateCode\r\n             countryCode\r\n            }\r\n          }\r\n          origin {\r\n            newLocation{\r\n                locationCode\r\n          type\r\n          cityCode\r\n          stateCode\r\n          countryCode\r\n            }\r\n            originalLocation{\r\n                locationCode\r\n          type\r\n          cityCode\r\n          stateCode\r\n          countryCode\r\n            }\r\n          }\r\n        }\r\n      }\r\n      recommendations {\r\n        id\r\n        isCheapest\r\n        isCPApplied\r\n        ranking\r\n        boundDetails {\r\n          origin {\r\n            locationCode\r\n            type\r\n            cityCode\r\n            stateCode\r\n            countryCode\r\n          }\r\n          destination {\r\n            locationCode\r\n            type\r\n            cityCode\r\n            stateCode\r\n            countryCode\r\n          }\r\n          duration {\r\n            hours\r\n            minutes\r\n          }\r\n          departureDateTime\r\n          arrivalDateTime\r\n          offerType\r\n          numberOfStops\r\n          hasOvernightConnection\r\n          hasAirportChange\r\n\r\n          isLongestSegmentAC\r\n          isBoundOALOperated\r\n          hasSignatureClass\r\n\r\n          arrivalDaysDifferenceTotal\r\n          operatingDisclosureAirlines {\r\n            includesACMainline\r\n            operatingAirlines {\r\n              code\r\n              name\r\n              airlineNumber\r\n            }\r\n          }\r\n          segments {\r\n            departingDaysDifference\r\n            arrivalDaysDifference\r\n            \r\n            flight {\r\n              flightId\r\n              aircraft {\r\n                code\r\n                name\r\n              }\r\n              marketingAirline {\r\n                code\r\n                name\r\n                airlineNumber\r\n              }\r\n              operatingAirline {\r\n                code\r\n                name\r\n                airlineNumber\r\n              }\r\n              duration {\r\n                hours\r\n                minutes\r\n              }\r\n              isEarlyDeparture\r\n              isLateDeparture\r\n              departure {\r\n                dateTime\r\n                location {\r\n                  locationCode\r\n                  type\r\n                  cityCode\r\n                  stateCode\r\n                  countryCode\r\n                }\r\n                terminal\r\n              }\r\n              arrival {\r\n                dateTime\r\n                location {\r\n                  locationCode\r\n                  type\r\n                  cityCode\r\n                  stateCode\r\n                  countryCode\r\n                }\r\n                terminal\r\n              }\r\n              stops {\r\n                location {\r\n                  locationCode\r\n                  type\r\n                  cityCode\r\n                  stateCode\r\n                  countryCode\r\n                }\r\n                disembarkationRequired\r\n              }\r\n            }\r\n            connectionTime {\r\n              hours\r\n              minutes\r\n            }\r\n            hasWifi\r\n            hasAirportChange\r\n          }\r\n        }\r\n        fareDetails {\r\n          cabin {\r\n            cabinCode\r\n            cheapestFare\r\n            eUpgradeStatus\r\n            cheapestFareExcludingMixedCabin\r\n            eUpgradeStatus\r\n            seatsLeft\r\n            #@deprecated\r\n            mixedCabin\r\n            mixedCabinInfo{\r\n                isAllOffersMixedCabin\r\n                isCheapestOfferMixedCabin\r\n                hasMixedCabin\r\n            }\r\n            hasLieFlatSeats\r\n            offers {\r\n              id\r\n              isCPApplied\r\n              fareFamilyCode\r\n              seatsLeft\r\n              dynamicFareRules {\r\n                attributeType\r\n                attributeNumber\r\n                icon\r\n                key\r\n              }\r\n              availabilityDetails {\r\n                bookingClass\r\n                fareBasisCode\r\n                mileagePercentage\r\n                mixedCabinCode\r\n                hasLieFlatSeats\r\n                eUpgradeInfo{\r\n                  additionalAmount\r\n                  credits\r\n                  isInClearanceWindow\r\n                   status\r\n                }\r\n                departure {\r\n                  locationCode\r\n                  type\r\n                  cityCode\r\n                  stateCode\r\n                  countryCode\r\n                }\r\n                arrival {\r\n                  locationCode\r\n                  type\r\n                  cityCode\r\n                  stateCode\r\n                  countryCode\r\n                }\r\n                fareBreakpoint\r\n              }\r\n              prices {\r\n                priceSummary {\r\n                  baseFare\r\n                  totalSurcharge\r\n                  totalTaxes\r\n                  totalFare\r\n                  totalFareRounded\r\n                }\r\n                discount {\r\n                  discountAmountType\r\n                  discountValue\r\n                }\r\n              }\r\n              dynamicFareRules {\r\n                attributeType\r\n                attributeNumber\r\n                icon\r\n                key\r\n              }\r\n            }\r\n          }\r\n        }\r\n      }\r\n      filters {\r\n        stops\r\n        airlines {\r\n          code\r\n          name\r\n        }\r\n        connectionAirports\r\n      }\r\n      discount {\r\n        isDiscountApplied\r\n        isFlightTaxesCovered\r\n        discountCode\r\n        tourCode\r\n        discountName\r\n        currency {\r\n          code\r\n          country\r\n          symbol\r\n        }\r\n        blackOutDateRanges {\r\n          bounds {\r\n            originCode\r\n            destinationCode\r\n            ranges {\r\n              startDate\r\n              endDate\r\n            }\r\n          }\r\n        }\r\n        bookStartDate\r\n        bookEndDate\r\n        travelStartDate\r\n        travelEndDate\r\n        maxDaysBeforeTrip\r\n        maxNumberOfPax\r\n        maxTripLength\r\n        isShoppingPromo\r\n        discountType\r\n        discountAmountType\r\n          discountApplicabilityForAncillaries{\r\n           lounge\r\n           meal\r\n           preferredSeat\r\n           standardSeat\r\n          }\r\n\r\n        paxDetails {\r\n          dob\r\n          firstName\r\n          middleName\r\n          lastName\r\n          paxType\r\n        }\r\n      }\r\n    }\r\n    sessionData {\r\n      bookingSessionId\r\n      transactionId\r\n    }\r\n    errors {\r\n      friendlyCode\r\n      systemErrorMessage\r\n      systemErrorCode\r\n      systemService\r\n      systemSubService\r\n    }\r\n    warnings {\r\n      friendlyCode\r\n      systemErrorMessage\r\n      systemErrorCode\r\n      systemService\r\n      systemSubService\r\n    }\r\n  }\r\n}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="x-api-key" elementType="Header">
+                  <stringProp name="Header.name">x-api-key</stringProp>
+                  <stringProp name="Header.value">da2-gju64xr2znbypl5pzbbr6g46ki</stringProp>
+                </elementProp>
+                <elementProp name="Postman-Token" elementType="Header">
+                  <stringProp name="Header.name">Postman-Token</stringProp>
+                  <stringProp name="Header.value">40036b74-fe86-49d2-8172-67f9a0a291e8</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Accept-Encoding" elementType="Header">
+                  <stringProp name="Header.name">Accept-Encoding</stringProp>
+                  <stringProp name="Header.value">gzip, deflate, br</stringProp>
+                </elementProp>
+                <elementProp name="User-Agent" elementType="Header">
+                  <stringProp name="Header.name">User-Agent</stringProp>
+                  <stringProp name="Header.value">PostmanRuntime/7.43.0</stringProp>
+                </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">*/*</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ProxyControl guiclass="ProxyControlGui" testclass="ProxyControl" testname="HTTP(S) Test Script Recorder" enabled="false">
+        <stringProp name="ProxyControlGui.port">8080</stringProp>
+        <collectionProp name="ProxyControlGui.exclude_list"/>
+        <collectionProp name="ProxyControlGui.include_list"/>
+        <boolProp name="ProxyControlGui.capture_http_headers">true</boolProp>
+        <intProp name="ProxyControlGui.grouping_mode">0</intProp>
+        <boolProp name="ProxyControlGui.add_assertion">false</boolProp>
+        <stringProp name="ProxyControlGui.sampler_type_name"></stringProp>
+        <boolProp name="ProxyControlGui.sampler_redirect_automatically">false</boolProp>
+        <boolProp name="ProxyControlGui.sampler_follow_redirects">true</boolProp>
+        <boolProp name="ProxyControlGui.use_keepalive">true</boolProp>
+        <boolProp name="ProxyControlGui.detect_graphql_request">true</boolProp>
+        <boolProp name="ProxyControlGui.sampler_download_images">false</boolProp>
+        <intProp name="ProxyControlGui.proxy_http_sampler_naming_mode">0</intProp>
+        <stringProp name="ProxyControlGui.default_encoding"></stringProp>
+        <stringProp name="ProxyControlGui.proxy_prefix_http_sampler_name"></stringProp>
+        <stringProp name="ProxyControlGui.proxy_pause_http_sampler"></stringProp>
+        <boolProp name="ProxyControlGui.notify_child_sl_filtered">false</boolProp>
+        <boolProp name="ProxyControlGui.regex_match">false</boolProp>
+        <stringProp name="ProxyControlGui.content_type_include"></stringProp>
+        <stringProp name="ProxyControlGui.content_type_exclude"></stringProp>
+      </ProxyControl>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
