@@ -1,0 +1,35 @@
+trigger:
+- main # Replace with your branch name if different
+ 
+pool:
+  vmImage: 'windows-latest' # Use a Windows VM image
+ 
+steps:
+- task: PowerShell@2
+  displayName: "Install JMeter"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Installing JMeter..."
+Invoke-WebRequest -Uri "https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.2.zip" -OutFile "apache-jmeter-5.6.2.zip"
+Expand-Archive -Path "apache-jmeter-5.6.2.zip" -DestinationPath "$(Build.SourcesDirectory)\jmeter"
+      Write-Host "JMeter installed successfully!"
+ 
+- task: PowerShell@2
+  displayName: "Run JMeter Test"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Running JMeter tests..."
+      $JMETER_HOME = "$(Build.SourcesDirectory)C:\Users\harikrishna.p\Desktop\automate\apache-jmeter-5.6.3"
+      $JMX_FILE_PATH = "$(Build.SourcesDirectory)\C:\Users\harikrishna.p\Desktop\automate\apache-jmeter-5.6.3\bin\script\Low Fare Search.jmx" # Update with your .jmx file path
+      $RESULTS_FILE = "$(Build.ArtifactStagingDirectory)\C:\Users\harikrishna.p\Desktop\automate\apache-jmeter-5.6.3\bin\script\results.jtl"
+      & "$JMETER_HOME\bin\jmeter.bat" -n -t "$JMX_FILE_PATH" -l "$RESULTS_FILE"
+      Write-Host "Test execution completed!"
+ 
+- task: PublishPipelineArtifact@1
+  displayName: "Publish JMeter Results"
+  inputs:
+    targetPath: "$(Build.ArtifactStagingDirectory)"
+    artifactName: jmeter-results
+    publishLocation: 'pipeline'
