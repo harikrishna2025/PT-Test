@@ -30,7 +30,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Low Fare Search">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Low_Fare_Search">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
