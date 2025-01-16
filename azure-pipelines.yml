@@ -1,26 +1,109 @@
 trigger:
-- main # Replace with your branch name if different
+- main  # Replace with your branch name if different
  
 pool:
-  vmImage: 'windows-latest' # Use a Windows VM image
+  vmImage: 'windows-latest'  # Use a Windows VM image
+ 
+variables:
+jmeterSetupUrl: 'https://aircanada-my.sharepoint.com/:u:/g/personal/harikrishna_pasupuleti_aircanada_ca/EbXbAjrTkeBKrM-Xm_BaXlkBSnl9qb_6s5M4DBOi-NR29g?e=MQ9JWf'  # Replace with the JMeter setup file URL
+jmxFileUrl: 'https://aircanada-my.sharepoint.com/:u:/g/personal/harikrishna_pasupuleti_aircanada_ca/EWoRIP9rSgJGqRsk1SdlGFwBRKxvVM_16unSaLGCibNKLA?e=iYXeUH'  # Replace with the JMX file URL
+jmeterZipPath: '$(Pipeline.Workspace)/jmeter.zip'
+  jmeterExtractPath: '$(Pipeline.Workspace)/apache-jmeter-5.6.3'
+  jmxFilePath: '$(Pipeline.Workspace)/Low_Fare_Search.jmx'
+  resultsFile: '$(Build.ArtifactStagingDirectory)/results/results.jtl'
  
 steps:
+# Step 1: Download JMeter Setup File from URL
+- task: PowerShell@2
+  displayName: "Download JMeter Setup File"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Downloading JMeter setup file from URL..."
+      Invoke-WebRequest -Uri "$(jmeterSetupUrl)" -OutFile "$(jmeterZipPath)" -UseBasicParsing
+      if (-Not (Test-Path "$(jmeterZipPath)")) {
+        Write-Error "Failed to download JMeter setup file."
+        exit 1
+      }
+      Write-Host "JMeter setup file downloaded to $(jmeterZipPath)."
  
+# Step 2: Validate and Extract JMeter Setup File
+- task: PowerShell@2
+  displayName: "Extract JMeter Setup File"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Validating downloaded ZIP file..."
+      if (-Not (Test-Path "$(jmeterZipPath)")) {
+        Write-Error "ZIP file not found at $(jmeterZipPath)."
+        exit 1
+      }
+      $fileSize = (Get-Item "$(jmeterZipPath)").Length
+      if ($fileSize -le 0) {
+        Write-Error "Downloaded file is empty or corrupted."
+        exit 1
+      }
+      Write-Host "File size: $fileSize bytes. Proceeding with extraction..."
+      try {
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory("$(jmeterZipPath)", "$(jmeterExtractPath)")
+        Write-Host "JMeter extracted to $(jmeterExtractPath)."
+      } catch {
+        Write-Error "Failed to extract file: $_"
+        exit 1
+      }
+ 
+# Step 3: Verify JMeter Installation
+- task: PowerShell@2
+  displayName: "Verify JMeter Installation"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Verifying JMeter installation..."
+      if (-Not (Test-Path "$(jmeterExtractPath)/bin/jmeter.bat")) {
+        Write-Error "JMeter installation is incomplete. File $(jmeterExtractPath)/bin/jmeter.bat is missing."
+        exit 1
+      }
+      Write-Host "JMeter installation verified successfully."
+ 
+# Step 4: Download JMX Test File from URL
+- task: PowerShell@2
+  displayName: "Download JMeter Test File"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Downloading JMeter .jmx test file from URL..."
+      Invoke-WebRequest -Uri "$(jmxFileUrl)" -OutFile "$(jmxFilePath)" -UseBasicParsing
+      if (-Not (Test-Path "$(jmxFilePath)")) {
+        Write-Error "Failed to download JMX test file."
+        exit 1
+      }
+      Write-Host "JMeter test file downloaded to $(jmxFilePath)."
+ 
+# Step 5: Run JMeter Test
 - task: PowerShell@2
   displayName: "Run JMeter Test"
   inputs:
     targetType: 'inline'
     script: |
       Write-Host "Running JMeter tests..."
-      $JMETER_HOME = "$(Build.SourcesDirectory)C:\Users\harikrishna.p\Desktop\automate\apache-jmeter-5.6.3"
-      $JMX_FILE_PATH = "$(Build.SourcesDirectory)\C:\Users\harikrishna.p\Desktop\automate\apache-jmeter-5.6.3\bin\script\Low Fare Search.jmx" # Update with your .jmx file path
-      $RESULTS_FILE = "$(Build.ArtifactStagingDirectory)\C:\Users\harikrishna.p\Desktop\automate\apache-jmeter-5.6.3\bin\script\results.jtl"
-      & "$JMETER_HOME\bin\jmeter.bat" -n -t "$JMX_FILE_PATH" -l "$RESULTS_FILE"
-      Write-Host "Test execution completed!"
+      $JMETER_HOME = "$(jmeterExtractPath)"
+      $JMX_FILE_PATH = "$(jmxFilePath)"
+      $RESULTS_FILE = "$(resultsFile)"
+      # Create results directory if it doesn't exist
+      New-Item -ItemType Directory -Force -Path "$(Build.ArtifactStagingDirectory)/results" | Out-Null
+      # Run JMeter
+      & "$JMETER_HOME/bin/jmeter.bat" -n -t "$JMX_FILE_PATH" -l "$RESULTS_FILE"
+      if ($LASTEXITCODE -ne 0) {
+        Write-Error "JMeter test execution failed with exit code $LASTEXITCODE."
+        exit $LASTEXITCODE
+      }
+      Write-Host "Test execution completed successfully!"
  
+# Step 6: Publish JMeter Results
 - task: PublishPipelineArtifact@1
   displayName: "Publish JMeter Results"
   inputs:
-    targetPath: "$(Build.ArtifactStagingDirectory)"
+    targetPath: "$(Build.ArtifactStagingDirectory)/results"
     artifactName: jmeter-results
     publishLocation: 'pipeline'
